@@ -214,12 +214,9 @@ class WorkerDirectoryUploadCommand(WorkerFileUploadCommand):
             mode = 'w|gz'
         else:
             mode = 'w'
-        # TODO: Use 'with' when depending on Python 2.7
-        # Not possible with older versions:
-        # exceptions.AttributeError: 'TarFile' object has no attribute '__exit__'
-        archive = tarfile.open(mode=mode, fileobj=self.fp)
-        archive.add(self.path, '')
-        archive.close()
+
+        with tarfile.open(mode=mode, fileobj=self.fp) as archive:
+            archive.add(self.path, '')
 
         # Transfer it
         self.fp.seek(0)
